@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="br">
+    <meta charset="UTF-8">
+    <title>Boleto Santander</title>
+    <style>
+        @media screen,
+        print {
+
+            #boleto {
+                width: 700px;
+                font-size: 12px;
+                font-family: Arial, sans-serif;
+                margin: 3.0cm auto auto 2cm;
+            }
+
+            .bold {
+                font-weight: bold;
+            }
+
+            #instrucoes ul {
+                padding: 10px;
+            }
+
+            #instrucoes .titulo {
+                text-align: center;
+            }
+
+            .linha-pontilhada {
+                width: 100%;
+                border-bottom: 2px dashed #000;
+            }
+
+            .linha-pontilhada span {
+                float: right;
+            }
+
+            .hack {
+                display: block;
+                clear: both;
+            }
+
+            /*Leiaute do Boleto*/
+            .logo {
+                width: 110px;
+                height: 40px;
+                background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAyMDQ4IDczMiIgd2lkdGg9IjkwMCIgaGVpZ2h0PSIzMjIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIHRyYW5zZm9ybT0idHJhbnNsYXRlKDApIiBkPSJtMCAwaDIwNDh2NzMyaC0yMDQ4eiIgZmlsbD0iI0ZFRkVGRSIvPgo8cGF0aCB0cmFuc2Zvcm09InRyYW5zbGF0ZSg0MTUsMjAzKSIgZD0ibTAgMCAyIDQgNSAxMiAxMSAyMCAzNSA2MCA1IDE1IDIgOSAxOSA2IDEzIDYgMTEgNiAxNCAxMCA3IDcgOSAxNCAzIDggMSA2djEwbC00IDEzLTYgMTAtOSAxMC0xMCA4LTEzIDgtMjMgMTAtMjggNy0yMSAzLTE2IDFoLTE1bC0yNy0yLTI3LTUtMjUtOS0xNi04LTYtNC0xMy0xMC03LTgtOC0xMy0zLTEzdi04bDQtMTQgOC0xMiAxMi0xMiAxNS0xMCAxNy04IDIwLTdoM2wzIDE5IDUgMTMgOCAxNCA5IDE1IDEyIDIxIDE0IDI0IDYgMTIgMiA1IDYtMTYgMi0xNS0yLTEzLTUtMTQtMTItMjEtNi0xMC0xMy0yMy02LTExLTUtMTItMS02di0xOGwzLTEyIDYtMTFoMmw1IDE0IDkgMTYgMTQgMjQgMTMgMjMgMTQgMjQgOCAxNiAyIDUgNS0xMiAzLTE0LTEtMTYtNC0xMi05LTE3LTE0LTI0LTEzLTIyLTUtMTEtNC0xNXYtMTRsMy0xMnoiIGZpbGw9IiNGOTEyMEYiLz4KPHBhdGggdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTUyMCwyNzUpIiBkPSJtMCAwaDlsMSAzM3YxNDhsLTEgMWgtMjZsLTEtMS0xLTEzLTUgNS04IDctMTAgNC03IDFoLTEzbC0xMS0yLTEyLTUtMTAtOC03LTktNy0xNC0zLTEyLTEtOXYtMjFsMy0xNSA1LTEzIDctMTAgNS02IDEwLTcgMTYtNyAxMC0yaDMxbDYgMXYtNDFsMi0yeiIgZmlsbD0iI0Y5MTIwRiIvPgo8cGF0aCB0cmFuc2Zvcm09InRyYW5zbGF0ZSg3OTcsMzIwKSIgZD0ibTAgMGgzNmwyNSA1IDQgMiAxIDJ2MTI0bC0yIDRoLTI1bC0xLTEtMS0xMi01IDUtOCA2LTEwIDQtMTAgMWgtMTBsLTExLTItMTItNS0xMS05LTctMTAtNS0xMC00LTE2LTEtMTggMi0yMSA0LTEyIDYtMTEgOS0xMCA3LTYgMTUtN3oiIGZpbGw9IiNGOTEyMEYiLz4KPHBhdGggdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTE3NCwzMjApIiBkPSJtMCAwaDM0bDIwIDMgMTAgMyAyIDJ2MTI4bC0xIDFoLTI2bC0xLTR2LTEwbC01IDUtOCA3LTEwIDQtOSAxaC0xMWwtMTEtMi0xMC00LTktNi05LTktNy0xNC00LTEzLTEtN3YtMjlsNC0xNiA4LTE2IDExLTExIDEyLTcgMTEtNHoiIGZpbGw9IiNGOTEyMEYiLz4KPHBhdGggdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTYwMiwzMjApIiBkPSJtMCAwaDI2bDEyIDMgMTIgNiA5IDggOCAxMyA0IDEyIDEgNnYyNWwtMSA4LTEgMWgtOTBsNCAxMiA1IDggNSA1IDEwIDUgMTEgMmgxNmwxOC0zIDE2LTVoM2wtMiAxNS0zIDExLTEyIDUtMTAgMi0xNiAxaC0xMmwtMTItMS0xOC02LTEyLTgtOC04LTgtMTYtNC0xNC0xLTZ2LTIzbDMtMTYgNS0xMyA3LTEwIDktOSAxNC03eiIgZmlsbD0iI0Y5MTIwRiIvPgo8cGF0aCB0cmFuc2Zvcm09InRyYW5zbGF0ZSg2NTUsMjczKSIgZD0ibTAgMGgyNWwxOSAzIDE1IDQgMSAxdjdsLTQgMTYtMSAzLTktMi0xOS00aC0yNmwtMTIgNC01IDUtMyA1djE0bDYgOSA1IDQgMTYgOCAxOCA4IDE2IDggMTMgMTAgNyA5IDQgOCAzIDE2LTEgMTItNCAxMS03IDExLTEwIDgtMTEgNS0xNiA0LTkgMWgtMjVsLTE5LTMtMTYtNS0zLTIgMS0xNCAzLTExIDQtMSAxNSA1IDE1IDMgMTYgMSAxNy0yIDEwLTQgNS01IDMtOS0xLTExLTQtNi04LTctMTYtOC0yNS0xMS0xMy04LTktOC02LTgtNS0xM3YtMjJsNC0xMyA2LTggNy03IDE0LTcgMTItM3oiIGZpbGw9IiNGOTEyMEYiLz4KPHBhdGggdHJhbnNmb3JtPSJ0cmFuc2xhdGUoOTI5LDMyMCkiIGQ9Im0wIDBoMzJsMTggNCAxNCA3IDggOSA1IDExIDIgMTJ2OTNsLTEgMWgtMjhsLTEtMi0xLTkzLTQtOC02LTUtMTEtM2gtMzR2MTExaC0yOWwtMS00di0xMjVsMi0yIDI3LTV6IiBmaWxsPSIjRjkxMjBGIi8+CjxwYXRoIHRyYW5zZm9ybT0idHJhbnNsYXRlKDEzMDUsMzIwKSIgZD0ibTAgMGgzNGwxNCAzIDEyIDUgNiA0IDcgNyA1IDExIDIgMTB2OTdoLTI5bC0xLTkxLTQtMTEtNS01LTctMy0xNy0yLTE0IDEtOCAxLTEgNjJ2NDhoLTI4bC0xLTEtMS0zNnYtMzZsMS01NyAxNi00eiIgZmlsbD0iI0Y5MTIwRiIvPgo8cGF0aCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMDU3LDI3NSkiIGQ9Im0wIDBoOHY0OWg0NGwxIDEtMSAxNi0yIDctMSAxLTQwIDF2NjlsMyA4IDcgNiA1IDFoMTNsMTAtMmg1bC0xIDEyLTIgMTItNSAyLTE2IDJoLTExbC0xMi0yLTktNC04LTctNS03LTMtOC0yLTE0di0xMzZsMS0zIDEzLTN6IiBmaWxsPSIjRjkxMjBGIi8+CjxwYXRoIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE0NjksMzQ1KSIgZD0ibTAgMGgyMWwxMCAyIDEgM3Y3NWwtNSA1LTggNC04IDJoLTE1bC0xMS00LTEwLTktNS0xMi0yLTl2LTIwbDMtMTMgNS0xMCA0LTUgOS02eiIgZmlsbD0iI0ZFRkVGRSIvPgo8cGF0aCB0cmFuc2Zvcm09InRyYW5zbGF0ZSg4MDQsMzQ1KSIgZD0ibTAgMGgyM2w2IDF2ODFsLTUgNC0xMSA0LTQgMWgtMTNsLTEzLTQtOC03LTYtMTItMy0xMnYtMTdsMi0xMiA2LTEyIDYtNyAxMC02eiIgZmlsbD0iI0ZFRkVGRSIvPgo8cGF0aCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMTkwLDM0NCkiIGQ9Im0wIDAgMTkgMiAxIDF2ODFsLTEyIDYtNyAyaC0xNWwtMTAtMy05LTctNi0xMC0zLTExLTEtNnYtMTRsMy0xNCA2LTEyIDQtNSA5LTYgMTEtM3oiIGZpbGw9IiNGRUZFRkUiLz4KPHBhdGggdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTczMCwzMjApIiBkPSJtMCAwaDQydjEybC0yIDEzLTMgMWgtNDB2MTExaC0yOXYtMTMwbDEzLTR6IiBmaWxsPSIjRjkxMjBGIi8+CjxwYXRoIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE2MDksMzQ0KSIgZD0ibTAgMGgxMWwxMSA0IDggNyA1IDEyIDEgMTBoLTYzdi03bDQtMTEgNi04IDgtNXoiIGZpbGw9IiNGRUZFRkUiLz4KPC9zdmc+Cg==');
+                background-size: contain;
+                background-repeat: no-repeat;
+                border-bottom: 1px solid #000;
+                float: left;
+            }
+
+            .cod-banco {
+                height: 20px;
+                font-size: 16px;
+                border-left: 2px solid #000;
+                border-right: 2px solid #000;
+                border-bottom: 1px solid #000;
+                float: left;
+                margin-top: 20px;
+                font-weight: bold;
+            }
+
+            .linha-digitavel {
+                width: 536px;
+                height: 20px;
+                font-size: 12px;
+                text-align: right;
+                border-bottom: 1px solid #000;
+                float: left;
+                margin-top: 20px;
+            }
+
+            .texto-elevado {
+                position: relative;
+                bottom: 5px;
+            }
+
+            .texto-centralizado {
+                text-align: center;
+                align-items: center;
+            }
+
+            .texto-a-direita {
+                text-align: right;
+            }
+
+            .texto-a-esquerda {
+                text-align: left;
+            }
+
+            .img-tamanho-fixo {
+                width: 392px;
+                height: 80px;
+                object-fit: contain;
+            }
+
+            .cell {
+                border-left: 1px solid #000;
+                border-top: 1px solid #000;
+                height: 25px;
+                font-size: 11px;
+                float: left;
+                font-weight: bold;
+                padding-left: 5px;
+            }
+
+            .no-border-left {
+                border-left: none;
+            }
+
+            .no-border-top {
+                border-top: none;
+            }
+
+            .cell label {
+                display: block;
+                height: 18px;
+                font-size: 10px;
+                text-align: left;
+                font-weight: normal;
+            }
+
+            table,
+            td,
+            th {
+                padding: 0;
+                margin: 0;
+                border-collapse: collapse;
+                border-spacing: 0;
+            }
+        }
+    </style>
+</head>
+
+<body id="boleto">
+    <!--Inicio do recibo do cedente-->
+    <div class="logo"></div>
+    <div class="cod-banco">&nbsp;033-7&nbsp;</div>
+    <div class="linha-digitavel bold">RECIBO DO PAGADOR</div>
+    <div class="hack"></div>
+    <div class="cell no-border-left texto-centralizado" style="width: 485px">
+        <label>Local de Pagamento</label>
+        <span class="texto-elevado">Pagável preferencialmente no Santander</span>
+    </div>
+    <div class="cell texto-a-direita" style="width: 203px">
+        <label>Vencimento</label>
+        <span class="texto-elevado">28/06/2015</span>
+    </div>
+    <div class="cell no-border-left" style="width: 485px; height: 60px;">
+        <label>Beneficiário</label>
+        BANCO SANTANDER S/A – 090400888000142<br>
+        AV PRES JUSCELINO KUBITSCHEK, 2041 - VILA NOVA CONCEICAO - 04543011<br>
+        SÃO PAULO - SP
+    </div>
+    <div class="cell texto-a-direita" style="width: 203px; height: 60px;">
+        <label>Agência/Cód. do Beneficiário</label>
+        <span class="texto-elevado">0002050 001031783</span>
+    </div>
+    <div class="cell no-border-left" style="width: 102px">
+        <label>Data do Documento</label>
+        <span class="texto-elevado">27/07/2023</span>
+    </div>
+    <div class="cell" style="width: 102px">
+        <label>No. do Documento</label>
+        <span class="texto-elevado">0230003197</span>
+    </div>
+    <div class="cell" style="width: 75px">
+        <label>Espécie Doc.</label>
+        <span class="texto-elevado">RC</span>
+    </div>
+    <div class="cell" style="width: 75px">
+        <label>Aceite</label>
+        <span class="texto-elevado">NAO</span>
+    </div>
+    <div class="cell" style="width: 107.8px">
+        <label>Data de Processamento</label>
+        <span class="texto-elevado">27/07/2023</span>
+    </div>
+    <div class="cell texto-a-direita" style="width: 203px">
+        <label>Nosso Número</label>
+        <span class="texto-elevado">9230003197001</span>
+    </div>
+    <div class="cell no-border-left" style="width: 102px">
+        <label>Uso do banco</label>
+        &nbsp;
+    </div>
+    <div class="cell" style="width: 102px">
+        <label>Carteira</label>
+        <span class="texto-elevado">RAPIDA C/REG</span>
+    </div>
+    <div class="cell" style="width: 75px">
+        <label>Espécie Moeda</label>
+        <span class="texto-elevado">REAL</span>
+    </div>
+    <div class="cell" style="width: 75px">
+        <label>Quantidade</label>
+        &nbsp;
+    </div>
+    <div class="cell" style="width: 107.8px">
+        <label>(x) Valor</label>
+        &nbsp;
+    </div>
+    <div class="cell texto-a-direita" style="width: 203px">
+        <label>(=) Valor do Documento</label>
+        <span class="texto-elevado">42,28</span>
+    </div>
+    <div class="cell no-border-left" style="width: 695px; height: 65px;">
+        <table style="width: 100%; border-collapse: collapse; border-spacing: 0;">
+            <tr>
+                <td style="vertical-align: top;"><label>Pagador:</label></td>
+                <td style="width: 60%;">
+                    <table>
+                        <tr>
+                            <td><label>MARCIO GARCIA</label></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </td>
+                            <td><label>000000003887774</label></td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="text-align: left;"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><label>AV MANOEL BOLIVAR, 10 - JARDIM CAROMBE</label></td>
+                <td style="text-align: left;"><label>Código de Baixa</label></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><label>02855-250 - SAO PAULO - SP</label></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><label>Sacador/Avalista</label></td>
+                <td><label>- 000000000000000</label></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+    <div class="cell no-border-left" style="width: 485px; height: 100px;">
+        <label>Mensagem:</label>
+        <span class="texto-elevado">COBRAR MULTA DE 1,06 A PARTIR DE 28/07/2023</span>
+    </div>
+    <div class="cell texto-a-direita" style="width: 203px; height: 20px;">
+        <label>&nbsp;</label>
+        &nbsp;
+    </div>
+    <div class="cell texto-a-direita no-border-top" style="width: 203px; height: 20px;">
+        <label>&nbsp;</label>
+        &nbsp;
+    </div>
+    <div class="cell texto-a-direita no-border-top" style="width: 203px; height: 20px;">
+        <label>&nbsp;</label>
+        &nbsp;
+    </div>
+    <div class="cell texto-a-direita no-border-top" style="width: 203px; height: 20px;">
+        <label>&nbsp;</label>
+        &nbsp;
+    </div>
+    <div class="cell texto-a-direita no-border-top" style="width: 203px; height: 20px;">
+        <label>&nbsp;</label>
+        &nbsp;
+    </div>
+    <div class="cell no-border-left" style="width: 695px; height: 80px;">
+        <span style="float: right">Autenticação mecânica</span>
+    </div>
+    <br class="hack">
+
+    </div>
+    <!--Final do recibo do cedente-->
+
+    <span style="float: right">Corte na linha pontilhada</span>
+    <br class="hack">
+    <div class="linha-pontilhada">
+    </div>
+
+    <!--Inicio do recibo do cedente-->
+    <div class="logo"></div>
+    <div class="cod-banco">&nbsp;033-7&nbsp;</div>
+    <div class="linha-digitavel bold">10498.00004 00002.915650 00000.013870 8 64750000010000</div>
+    <div class="hack"></div>
+    <div class="cell no-border-left texto-centralizado" style="width: 485px">
+        <label>Local de Pagamento</label>
+        <span class="texto-elevado">Pagável preferencialmente no Santander</span>
+    </div>
+    <div class="cell texto-a-direita" style="width: 203px">
+        <label>Vencimento</label>
+        <span class="texto-elevado">28/06/2015</span>
+    </div>
+    <div class="cell no-border-left" style="width: 485px; height: 60px;">
+        <label>Beneficiário</label>
+        BANCO SANTANDER S/A – 090400888000142<br>
+        AV PRES JUSCELINO KUBITSCHEK, 2041 - VILA NOVA CONCEICAO - 04543011<br>
+        SÃO PAULO - SP
+    </div>
+    <div class="cell texto-a-direita" style="width: 203px; height: 60px;">
+        <label>Agência/Cód. do Beneficiário</label>
+        <span class="texto-elevado">0002050 001031783</span>
+    </div>
+    <div class="cell no-border-left" style="width: 102px">
+        <label>Data do Documento</label>
+        <span class="texto-elevado">27/07/2023</span>
+    </div>
+    <div class="cell" style="width: 102px">
+        <label>No. do Documento</label>
+        <span class="texto-elevado">0230003197</span>
+    </div>
+    <div class="cell" style="width: 75px">
+        <label>Espécie Doc.</label>
+        <span class="texto-elevado">RC</span>
+    </div>
+    <div class="cell" style="width: 75px">
+        <label>Aceite</label>
+        <span class="texto-elevado">NAO</span>
+    </div>
+    <div class="cell" style="width: 107.8px">
+        <label>Data de Processamento</label>
+        <span class="texto-elevado">27/07/2023</span>
+    </div>
+    <div class="cell texto-a-direita" style="width: 203px">
+        <label>Nosso Número</label>
+        <span class="texto-elevado">9230003197001</span>
+    </div>
+    <div class="cell no-border-left" style="width: 102px">
+        <label>Uso do banco</label>
+        &nbsp;
+    </div>
+    <div class="cell" style="width: 102px">
+        <label>Carteira</label>
+        <span class="texto-elevado">RAPIDA C/REG</span>
+    </div>
+    <div class="cell" style="width: 75px">
+        <label>Espécie Moeda</label>
+        <span class="texto-elevado">REAL</span>
+    </div>
+    <div class="cell" style="width: 75px">
+        <label>Quantidade</label>
+        &nbsp;
+    </div>
+    <div class="cell" style="width: 107.8px">
+        <label>(x) Valor</label>
+        &nbsp;
+    </div>
+    <div class="cell texto-a-direita" style="width: 203px">
+        <label>(=) Valor do Documento</label>
+        <span class="texto-elevado">42,28</span>
+    </div>
+    <div class="cell no-border-left" style="width: 485.1px; height: 100px;">
+        <label>Instruções</label>
+        COBRAR MULTA DE 1,06 A PARTIR DE 28/07/2023
+    </div>
+    <div class="cell texto-a-direita" style="width: 203px; height: 20px;">
+        <label>(-) Desconto/Abatimentos</label>
+        &nbsp;
+    </div>
+    <div class="cell texto-a-direita" style="width: 203px; height: 20px;">
+        <label>&nbsp;</label>
+        &nbsp;
+    </div>
+    <div class="cell texto-a-direita" style="width: 203px; height: 20px;">
+        <label>(+) Mora / Multa</label>
+        &nbsp;
+    </div>
+    <div class="cell texto-a-direita" style="width: 203px; height: 20px;">
+        <label>&nbsp;</label>
+        &nbsp;
+    </div>
+    <div class="cell texto-a-direita" style="width: 203px; height: 20px;">
+        <label>(=) Valor Cobrado</label>
+        &nbsp;
+    </div>
+    <div class="cell no-border-left" style="width: 695px; height: 65px;">
+        <table style="width: 100%; border-collapse: collapse; border-spacing: 0;">
+            <tr>
+                <td style="vertical-align: top;"><label>Pagador:</label></td>
+                <td style="width: 60%;">
+                    <table>
+                        <tr>
+                            <td><label>MARCIO GARCIA</label></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </td>
+                            <td><label>000000003887774</label></td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="text-align: left;"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><label>AV MANOEL BOLIVAR, 10 - JARDIM CAROMBE</label></td>
+                <td style="text-align: left;"><label>Código de Baixa</label></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><label>02855-250 - SAO PAULO - SP</label></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><label>Sacador/Avalista</label></td>
+                <td><label>- 000000000000000</label></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+    <div class="cell no-border-left" style="width: 695px; height: 80px;">
+        <span style="float: right">Autenticação mecânica</span>
+        <!-- Esta é apenas uma ilustração do código de barras. tem que ser substituido pelo que o seu sistema irá gerar! -->
+        <img src="imagens/mod-boleto10.jpg" class="img-tamanho-fixo" />
+        <!-- <img src="data:image/jpeg;base64,{{Base64CodigoDeBarras}}" class="img-tamanho-fixo" /> -->
+    </div>
+    <span style="float: right">Corte na linha pontilhada</span>
+    <br class="hack">
+    <div class="linha-pontilhada">
+
+    </div>
+    <!--Final do recibo do cedente-->
+
+</body>
+
+</html>
